@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prime Harvest OZ — Purchase Order</title>
+<style>
+:root{--green:#176b3a;--light:#f3f8f4;--border:#ccd8cf;--dark:#173126}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;color:#18251e;background:#eef2ef}
+.app{max-width:1200px;margin:auto;background:#fff;min-height:100vh}
+header{padding:18px 28px;border-bottom:3px solid var(--green);display:flex;justify-content:space-between;gap:20px}
+h1{margin:0;color:var(--green);font-size:28px} h2{margin-top:0;color:var(--green)}
+.company{text-align:right;font-size:13px;line-height:1.5}
+nav{display:flex;gap:5px;padding:10px 18px;background:#173126;position:sticky;top:0;z-index:5}
+nav button{flex:1;padding:11px;border:0;border-radius:5px;background:#315341;color:#fff;cursor:pointer}
+nav button.active{background:#fff;color:#173126;font-weight:bold}
+.page{display:none;padding:25px 28px}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+label{font-weight:bold;font-size:13px}input,select,textarea{width:100%;padding:9px;border:1px solid var(--border);border-radius:5px;margin-top:5px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+.category-tabs{display:flex;gap:10px;margin:18px 0 12px;padding:5px;background:#eef4f0;border-radius:8px}
+.category-tab{padding:12px 26px;border:2px solid #c7d8cc;border-radius:7px;background:#fff;color:#173126;cursor:pointer;font-weight:bold;font-size:14px;min-width:110px}
+.category-tab:hover{background:#f3f8f4}
+.category-tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+button.primary,button.secondary{padding:10px 15px;border:0;border-radius:5px;cursor:pointer;font-weight:bold}
+.primary{background:var(--green);color:white}.secondary{background:#e6eee9;color:#173126}
+.order-row{display:grid;grid-template-columns:70px 1fr 100px 120px 130px;gap:8px;align-items:center;border-bottom:1px solid #ddd;padding:9px 0}
+.order-row img,.item img{width:58px;height:48px;object-fit:cover;border-radius:5px;background:#eee}
+.qty{width:90px}.total{text-align:right;font-weight:bold}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid var(--border);padding:7px;text-align:left;vertical-align:middle}th{background:var(--light)}
+td img{width:60px;height:50px;object-fit:cover}.season{font-weight:bold;color:#176b3a;background:#eef7f0;padding:4px 6px;border-radius:4px;display:inline-block;white-space:nowrap}
+.summary{background:var(--light);padding:15px;border-radius:7px;margin-top:15px}
+.po-preview{border:1px solid #bbb;padding:25px;background:#fff}
+.right{text-align:right}.muted{color:#68756e}.note{font-size:12px;color:#59655f}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.order-row{grid-template-columns:55px 1fr 75px 95px 95px;font-size:12px}header{flex-direction:column}.company{text-align:left}}
+@media print{
+ body{background:white}.app{max-width:none}.no-print,nav{display:none!important}.page{display:none!important}.page.printable{display:block!important;padding:0}.po-preview{border:0}
+}
+
+.login-screen{position:fixed;inset:0;background:#eef2ef;display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-card{width:min(390px,calc(100% - 32px));background:#fff;padding:30px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.login-card h2{margin:0 0 8px}
+.login-card p{margin:0 0 18px;color:#68756e;font-size:13px}
+.login-card input{margin:6px 0 12px}
+.login-card button{width:100%;padding:11px;border:0;border-radius:6px;background:var(--green);color:#fff;font-weight:bold;cursor:pointer}
+.login-error{color:#b42318;font-size:13px;margin:8px 0;display:none}
+.demo-hint{margin-top:12px;font-size:12px;color:#68756e;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <form class="login-card" onsubmit="return dummyLogin(event)">
+    <h2>Prime Harvest OZ</h2>
+    <p>Demo login — please enter your login details.</p>
+    <label>Username<input id="loginUsername" autocomplete="username" required placeholder="Enter username"></label>
+    <label>Password<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Enter password"></label>
+    <div id="loginError" class="login-error">Incorrect username or password.</div>
+    <button type="submit">Log in</button>
+    <div class="hint">Demo: <b>demo</b> / <b>demo123</b></div>
+  </form>
+</div>
+
+<div class="app">
+<header>
+ <div><h1>PRIME HARVEST OZ</h1><div>Purchase Order Portal</div></div>
+ <div class="company"><b>Prime Harvest OZ</b><br>34 Bruny Dr, Tarneit VIC 3029<br>ABN: 42 834 791 70</div>
+</header>
+<nav class="no-print">
+ <button class="active" onclick="showPage(1)">1. Order</button>
+ <button onclick="showPage(3)">2. PO Preview</button>
+</nav>
+
+<section id="page1" class="page active">
+<h2>1. Create Your Order</h2>
+<div class="grid">
+ <div><label>Customer / Business Name<input id="customer" placeholder="Customer name"></label></div>
+ <div><label>Order Date<input id="orderDate" type="date"></label></div>
+</div>
+<p class="note">Search for a product, then enter the quantity. Each product appears only once. Quantity × carton/tray price is calculated live.</p>
+<div class="toolbar">
+ <input id="orderSearch" placeholder="Search products on this order page..." oninput="renderOrder()">
+</div>
+<div id="orderList"></div>
+<div class="toolbar no-print">
+ <button class="secondary" onclick="showPage(2)">View Product Catalogue & Seasonal Guide</button>
+</div>
+<div class="summary"><b>Order total: $<span id="grandTotal">0.00</span></b></div>
+<div class="toolbar">
+ <button class="primary" onclick="showPage(3)">Generate Preview →</button>
+ <button class="secondary" onclick="clearOrder()">Clear quantities</button>
+</div>
+</section>
+
+<section id="page2" class="page">
+<h2>Product Catalogue & Seasonal Guide</h2>
+<p class="note"><b>Season is shown as months</b> so customers can quickly see the typical Australian/Victorian seasonal period. Prices and pack details are based on the information supplied for this version.</p>
+<div class="category-tabs no-print">
+  <button class="category-tab active" onclick="setCategory('all',this)">All</button>
+  <button class="category-tab" onclick="setCategory('fruits',this)">Fruits</button>
+  <button class="category-tab" onclick="setCategory('vegetables',this)">Vegetables</button>
+</div>
+<div id="categoryTabs" class="category-tabs no-print">
+  <button type="button" class="category-tab active" data-category="all" onclick="setCategory('all',this)">1. All</button>
+  <button type="button" class="category-tab" data-category="fruits" onclick="setCategory('fruits',this)">2. Fruits</button>
+  <button type="button" class="category-tab" data-category="vegetables" onclick="setCategory('vegetables',this)">3. Vegetables</button>
+</div>
+<div class="toolbar no-print"><input id="search" placeholder="Search products..." oninput="renderCatalogue()"></div>
+<table><thead><tr><th>#</th><th>Image</th><th>Product</th><th>Pack / UOM</th><th>Price</th><th>Packaging / logistics</th><th>Season</th></tr></thead>
+<tbody id="catalogue"></tbody></table>
+</section>
+
+<section id="page3" class="page">
+<h2 class="no-print">3. Purchase Order Preview</h2>
+<div id="preview" class="po-preview"></div>
+<div class="toolbar no-print">
+ <button class="primary" onclick="window.print()">Print / Save as PDF</button>
+ <button class="secondary" onclick="showPage(1)">← Edit Order</button>
+</div>
+<p class="note no-print">Choose “Save as PDF” in the browser print dialog. The customer can then manually attach the PDF to an email to Prime Harvest OZ.</p>
+</section>
+
+
+</div>
+
+<script>
+
+function dummyLogin(event){
+ event.preventDefault();
+ const username=document.getElementById('loginUsername').value.trim();
+ const password=document.getElementById('loginPassword').value;
+ if(username==='demo' && password==='demo123'){
+   document.getElementById('loginScreen').style.display='none';
+   sessionStorage.setItem('primeHarvestDemoLoggedIn','1');
+ }else{
+   document.getElementById('loginError').style.display='block';
+ }
+ return false;
+}
+if(sessionStorage.getItem('primeHarvestDemoLoggedIn')==='1'){
+ window.addEventListener('DOMContentLoaded',()=>{document.getElementById('loginScreen').style.display='none';});
+}
+
+const products = [
+{category:"vegetables",n:5,name:"Mushroom White Cup",uom:"4kg",price:50,pack:"carton · 4kg net / 5.18kg gross · 0.013 m³ · 38×28×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/Loose-Button-Mushrooms-970x590.jpg"},
+{category:"vegetables",n:6,name:"White Button Mushroom",uom:"4kg",price:40,pack:"carton · 4kg net / 5kg gross · 0.014 m³ · 38×29×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/Loose-Button-Mushrooms-970x590.jpg"},
+{category:"vegetables",n:7,name:"Flat Mushroom",uom:"4kg",price:40,pack:"carton · 4kg net / 5kg gross · 0.014 m³ · 38×29×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/White-Flats-970x590.jpg"},
+{category:"vegetables",n:8,name:"Salad Mix Tripod LOOSE - 10-12 Types Leaves",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
+{category:"vegetables",n:9,name:"Salad Mix Tripod LOOSE - 3-4 Types Leaves",uom:"1.5kg",price:11,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
+{category:"vegetables",n:10,name:"Rocket - LOOSE",uom:"1.5kg",price:18,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/rocket%201.5kg.png?raw=true"},
+{category:"vegetables",n:11,name:"Baby Spinach - LOOSE",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/spinach%20loose.png?raw=true"},
+{category:"vegetables",n:12,name:"Baby Cos - LOOSE",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:""},
+{category:"vegetables",n:13,name:"Chard - LOOSE",uom:"1.5kg",price:15,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:""},
+{category:"vegetables",n:14,name:"Snow Pea Tendons - LOOSE",uom:"1.5kg",price:20,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Sep–Dec",img:""},
+{category:"vegetables",n:15,name:"Baby Spinach - Loose",uom:"3kg",price:24,pack:"carton · 3kg net / 3.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:""},
+{category:"vegetables",n:16,name:"Salad Mix - Loose",uom:"3kg",price:24,pack:"carton · 3kg net / 3.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
+{category:"vegetables",n:17,name:"Tripod Leafy Patch - Gourmet Mix",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/GM%20120g.png?raw=true"},
+{category:"vegetables",n:18,name:"Tripod Leafy Patch - Baby Spinach",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BS%20120g.png?raw=true"},
+{category:"vegetables",n:19,name:"Tripod Leafy Patch - Rocket Leaves",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/RL%20120g.png?raw=true"},
+{category:"vegetables",n:20,name:"Tripod Leafy Patch - Superleaf Mix",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/SLM%20120g.png?raw=true"},
+{category:"vegetables",n:21,name:"Tripod Prepacked - Gourmet Mixed",uom:"Box (100g x 16)",price:24,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/GM%20100g.png?raw=true"},
+{category:"vegetables",n:22,name:"Tripod Prepacked - Baby Kale",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BK%20100g.png?raw=true"},
+{category:"vegetables",n:23,name:"Tripod Prepacked - Rocket Leaves",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/RL%20100g.png?raw=true"},
+{category:"vegetables",n:24,name:"Tripod Prepacked - Baby Cos",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BC%20100g.png?raw=true"},
+{category:"vegetables",n:25,name:"Tripod Prepacked - Watercress",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/WC%20100g.png?raw=true"},
+{category:"vegetables",n:26,name:"Tripod Prepacked - Soft Spinach Leaves",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+{category:"vegetables",n:27,name:"Tripod Prepacked - Spicy Rocket",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+{category:"vegetables",n:28,name:"Tripod Prepacked - Bitter Radicchio",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+{category:"vegetables",n:29,name:"Tripod Prepacked - Crisp Chard",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+{category:"vegetables",n:30,name:"Asparagus",uom:"5kg",price:55,pack:"carton · 5kg net / 6kg gross · 0.02 m³ · 25×23×30cm",season:"Sep–Feb",img:"https://www.gfsstore.com/wp-content/uploads/2026/08/D120001299468-1786565774.jpg"},
+{category:"vegetables",n:31,name:"Broccoli ICED",uom:"8kg",price:20,pack:"foam carton · 8kg net / 12.5kg gross · 0.05 m³ · 58×29×30cm",season:"Jan–Dec",img:"https://fruitezy.com.au/cdn/shop/files/69BBA1DC-F245-4D15-9165-F567D51D1AA5.webp?v=1752930994"},
+{category:"vegetables",n:32,name:"BROCCOLINI",uom:"12's",price:22,pack:"foam carton · 2.5kg net / 3.5kg gross · 0.028 m³ · 39×29×16cm",season:"Jan–Dec",img:"https://d2j6dbq0eux0bg.cloudfront.net/images/76643759/products/495698387/5316320325.jpg"},
+{category:"vegetables",n:33,name:"WA Brown Onion 50-70mm",uom:"20kg",price:16,pack:"Sack · 20kg net / 21kg gross · 0.04 m³ · 56×47×17cm",season:"Jan–Dec",img:"https://summitproduce.co.nz/wp-content/uploads/2024/12/Onions-Jumbo-20kg-scaled.jpg"},
+{category:"vegetables",n:34,name:"TAS Red Onion 50-70mm",uom:"10kg",price:6,pack:"Sack · 10kg net / 10.5kg gross · 0.03 m³ · 63×38×15cm",season:"Jan–Dec",img:"https://153259612.cdn6.editmysite.com/uploads/1/5/3/2/153259612/5CRAD5JZEX4MT576ADRJNBWY.jpeg"},
+{category:"vegetables",n:46,name:"Cauliflower (QLD)",uom:"10's",price:26,pack:"carton · 9kg net / 9.5kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://fruitco.com.au/cdn/shop/files/Cauliflower_Box_10_Pieces.jpg?v=1760460048"},
+{category:"vegetables",n:47,name:"Baby cauliflower ",uom:"6's",price:50,pack:"foam carton · 2.5kg net / 3.5kg gross · 0.028 m³ · 39×29×16cm",season:"Apr–Sep",img:"https://www.thompson-morgan.com/product_images/100/CAUL_FIORETTO_S63607.jpg"},
+{category:"vegetables",n:49,name:"Jap pumpkin",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://www.australianplantsonline.com.au/media/catalog/product/5/0/500_pumpkin_jap_1_.jpg?optimize=medium&fit=bounds&height=720&width=720"},
+{category:"vegetables",n:50,name:"Butternut",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://www.theorganicgrocer.com.au/_next/image?url=https%3A%2F%2Fstatic.ooooby.org%2Fimage%2Fproduct%2Fnfs%2Fab957d9d-b4e2-4e76-b8fb-6313cbe38e55.64f4c6fe.jpg&w=3840&q=75"},
+{category:"vegetables",n:51,name:"Jarradale Pumpkin",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://i.ebayimg.com/images/g/BpkAAeSweaZpcSij/s-l1200.jpg"},
+{category:"vegetables",n:52,name:"Zucchini",uom:"10kg",price:25,pack:"carton · 10kg net / 10.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Sep–Feb",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm9jxyiNcK9l1c6tlm8bUXR-fEFRU11bT5u8QlgFZrSQ&s"},
+{category:"fruits",n:35,name:"Londsdale Strawberries (MED)",uom:"Tray (250g x 15)",price:50,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://www.perfection.com.au/hs-fs/hubfs/548ffe9e-baec-45fd-a250-c1c73a45dc8d.jpeg?width=366&height=290&name=548ffe9e-baec-45fd-a250-c1c73a45dc8d.jpeg"},
+{category:"fruits",n:36,name:"Mal's Black Label Premium Strawberries (MED)",uom:"Tray (250g x 15)",price:60,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://images.thewest.com.au/publication/B88963394Z/1537168757129_GKH1R2NFV.5-0.jpg/"},
+{category:"fruits",n:37,name:"Generic Strawberries (MED)",uom:"Tray (250g x 15)",price:40,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://shophilton.gilbertsfresh.com.au/wp-content/uploads/2022/08/Strawberry-Punnet.jpg"},
+{category:"fruits",n:38,name:"Driscoll's Blueberries (SM)",uom:"Tray (125g x 12)",price:42,pack:"tray · 1.5kg net / 2kg gross · 0.008 m³ · 39×28.5×7.5cm",season:"Sep–Feb",img:"https://cdn0.woolworths.media/content/wowproductimages/large/774651.jpg"},
+{category:"fruits",n:39,name:"Driscoll's Raspberries",uom:"Tray (125g x 12)",price:48,pack:"TRAY · 0.13kg net / 0.13kg gross · 0.01 m³ · 38.5×28.5×9cm",season:"Sep–Feb",img:"https://narraweenafruitmarket.com.au/wp-content/uploads/2024/05/Resized_20240515_124658.jpeg"},
+{category:"vegetables",n:40,name:"Prupletts Purple Carrot",uom:"Box (500g x 18)",price:35,pack:"carton · 9kg net / 9.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/purple%20carrot.png?raw=true"},
+{category:"vegetables",n:41,name:"Jack Rabbit Carrot - Loose",uom:"20kg",price:27,pack:"carton · 20kg net / 20.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDdwKhiiYZyrgoV58y8wh9wLborbe2FzlNHP2SZFwfW1uHCA92BvBUGu0&s=10"},
+{category:"fruits",n:42,name:"Zespri Gold Kiwi",uom:"6kg",price:42,pack:"carton · 6kg net / 6.5kg gross · 0.02 m³ · 40×30×13cm",season:"Mar–Aug",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSrUSeJS7LhanKfGxztt50fSgKnF0mdcE4RK2NBz5Uh9sOaj1yQCdwEUp&s=10"},
+{category:"fruits",n:43,name:"Cavendish banana (Bunch)",uom:"Carton",price:35,pack:"carton · 15kg net / 15.5kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://thepricklypineapple.com/cdn/shop/files/Screenshot2025-07-20at8.08.05am.png?v=1752970112&width=1214"},
+{category:"fruits",n:44,name:"Avocado Hass (NZ) 18's",uom:"18's",price:42,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://backyardpantry.com.au/wp-content/uploads/2022/09/20220908_101307-scaled.jpg"},
+{category:"fruits",n:45,name:"Avocado Hass (NZ) 20's",uom:"20's",price:42,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://d2j6dbq0eux0bg.cloudfront.net/images/76643759/products/495210590/5027362510.jpg"},
+{category:"fruits",n:45,name:"Avocado Hass (NZ) 23's",uom:"23's",price:35,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdTx7MtCsSWbQVKH_56IxPxlwQOKrMSLcotKUpz6oJBg_3omI8lxJqCCqz&s=10"}
+];
+
+function imgTag(p){return p.img ? `<img src="${p.img}" alt="${p.name}">` : `<div style="width:60px;height:50px;background:#eee;border-radius:5px"></div>`}
+function renderOrder(){
+ const el=document.getElementById('orderList');
+ const term=(document.getElementById('orderSearch')?.value||'').toLowerCase();
+ el.innerHTML=products.map((p,i)=>({p,i})).filter(x=>x.p.name.toLowerCase().includes(term)).map(({p,i})=>`<div class="order-row">
+ ${imgTag(p)}<div><b>${p.name}</b><br><span class="muted">${p.uom} · $${p.price.toFixed(2)}</span></div>
+ <input class="qty" type="number" min="0" step="1" value="0" data-i="${i}" oninput="calc()">
+ <div>$<span id="line${i}">0.00</span></div><div class="note">${p.season}</div></div>`).join('');
+}
+function calc(){
+ let total=0;
+ document.querySelectorAll('.qty').forEach(q=>{let i=+q.dataset.i;let v=Math.max(0,+q.value||0);let line=v*products[i].price;document.getElementById('line'+i).textContent=line.toFixed(2);total+=line});
+ document.getElementById('grandTotal').textContent=total.toFixed(2);
+}
+let selectedCategory = 'all';
+
+function setCategory(category, button){
+ selectedCategory = category;
+ document.querySelectorAll('.category-tab').forEach(b=>b.classList.remove('active'));
+ if(button) button.classList.add('active');
+ renderCatalogue();
+}
+
+function renderCatalogue(){
+ let term=(document.getElementById('search')?.value||'').toLowerCase();
+ let filtered=products.filter(p=>{
+   let categoryMatch=selectedCategory==='all' || p.category===selectedCategory;
+   let searchMatch=p.name.toLowerCase().includes(term);
+   return categoryMatch && searchMatch;
+ });
+ document.getElementById('catalogue').innerHTML=filtered.map(p=>`<tr>
+  <td>${p.n}</td><td>${imgTag(p)}</td><td><b>${p.name}</b></td><td>${p.uom}</td><td>$${p.price.toFixed(2)}</td><td>${p.pack}</td><td class="season">${p.season}</td></tr>`).join('');
+}
+function showPage(n){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active','printable'));
+ document.getElementById('page'+n).classList.add('active');
+ document.querySelectorAll('nav button').forEach((b)=>b.classList.remove('active')); if(n===1)document.querySelectorAll('nav button')[0].classList.add('active'); if(n===3)document.querySelectorAll('nav button')[1].classList.add('active');
+ if(n===2)renderCatalogue(); if(n===3){buildPreview();document.getElementById('page3').classList.add('printable')}
+ window.scrollTo(0,0);
+}
+function buildPreview(){
+ let rows=[],total=0;
+ document.querySelectorAll('.qty').forEach(q=>{let i=+q.dataset.i,v=Math.max(0,+q.value||0);if(v){let p=products[i],line=v*p.price;total+=line;rows.push(`<tr><td>${p.name}</td><td>${p.uom}</td><td>${v}</td><td>$${p.price.toFixed(2)}</td><td>$${line.toFixed(2)}</td></tr>`)}})
+ let c=document.getElementById('customer').value||document.getElementById('customer4').value||'Customer';
+ document.getElementById('preview').innerHTML=`<h1>PRIME HARVEST OZ</h1><p>34 Bruny Dr, Tarneit VIC 3029 · ABN 42 834 791 70</p>
+ <hr><h2>PURCHASE ORDER</h2><p><b>Customer:</b> ${esc(c)}<br><b>Order date:</b> ${document.getElementById('orderDate').value||new Date().toLocaleDateString('en-AU')}</p>
+ <table><thead><tr><th>Product</th><th>Pack / UOM</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead><tbody>${rows.length?rows.join(''):'<tr><td colspan="5">No products selected.</td></tr>'}</tbody></table>
+ <h2 class="right">TOTAL: $${total.toFixed(2)}</h2>
+ <hr><p><b>Contact:</b> ${esc(document.getElementById('contact').value)} &nbsp; <b>Phone:</b> ${esc(document.getElementById('phone').value)} &nbsp; <b>Email:</b> ${esc(document.getElementById('email').value)}</p>
+ <p><b>Delivery address:</b><br>${esc(document.getElementById('address').value).replace(/\\n/g,'<br>')}</p>
+ <p><b>Notes:</b><br>${esc(document.getElementById('notes').value).replace(/\\n/g,'<br>')}</p>
+ <p class="note">Customer: please print/save this PO as PDF and manually email it to Prime Harvest OZ.</p>`;
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function clearOrder(){document.querySelectorAll('.qty').forEach(q=>q.value=0);calc()}
+function sync(id,v){document.getElementById(id).value=v}
+document.getElementById('orderDate').value=new Date().toISOString().slice(0,10);
+renderOrder();calc();renderCatalogue();
+</script>
+</body>
+</html>
