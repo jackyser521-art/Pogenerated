@@ -127,130 +127,516 @@ td img{width:60px;height:50px;object-fit:cover}.season{font-weight:bold;color:#1
 <script>
 
 function dummyLogin(event){
- event.preventDefault();
- const username=document.getElementById('loginUsername').value.trim();
- const password=document.getElementById('loginPassword').value;
- if(username==='demo' && password==='demo123'){
-   document.getElementById('loginScreen').style.display='none';
-   sessionStorage.setItem('primeHarvestDemoLoggedIn','1');
- }else{
-   document.getElementById('loginError').style.display='block';
- }
- return false;
+  event.preventDefault();
+
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  if(username === 'demo' && password === 'demo123'){
+    document.getElementById('loginScreen').style.display = 'none';
+    sessionStorage.setItem('primeHarvestDemoLoggedIn','1');
+  }else{
+    document.getElementById('loginError').style.display = 'block';
+  }
+
+  return false;
 }
-if(sessionStorage.getItem('primeHarvestDemoLoggedIn')==='1'){
- window.addEventListener('DOMContentLoaded',()=>{document.getElementById('loginScreen').style.display='none';});
+
+if(sessionStorage.getItem('primeHarvestDemoLoggedIn') === '1'){
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('loginScreen').style.display='none';
+  });
 }
+
+
+/* =========================
+   PRODUCTS
+   ========================= */
 
 const products = [
-{category:"vegetables",n:5,name:"Mushroom White Cup",uom:"4kg",price:50,pack:"carton · 4kg net / 5.18kg gross · 0.013 m³ · 38×28×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/Loose-Button-Mushrooms-970x590.jpg"},
-{category:"vegetables",n:6,name:"White Button Mushroom",uom:"4kg",price:40,pack:"carton · 4kg net / 5kg gross · 0.014 m³ · 38×29×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/Loose-Button-Mushrooms-970x590.jpg"},
-{category:"vegetables",n:7,name:"Flat Mushroom",uom:"4kg",price:40,pack:"carton · 4kg net / 5kg gross · 0.014 m³ · 38×29×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/White-Flats-970x590.jpg"},
-{category:"vegetables",n:8,name:"Salad Mix Tripod LOOSE - 10-12 Types Leaves",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
-{category:"vegetables",n:9,name:"Salad Mix Tripod LOOSE - 3-4 Types Leaves",uom:"1.5kg",price:11,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
-{category:"vegetables",n:10,name:"Rocket - LOOSE",uom:"1.5kg",price:18,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/rocket%201.5kg.png?raw=true"},
-{category:"vegetables",n:11,name:"Baby Spinach - LOOSE",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/spinach%20loose.png?raw=true"},
-{category:"vegetables",n:12,name:"Baby Cos - LOOSE",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:""},
-{category:"vegetables",n:13,name:"Chard - LOOSE",uom:"1.5kg",price:15,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:""},
-{category:"vegetables",n:14,name:"Snow Pea Tendons - LOOSE",uom:"1.5kg",price:20,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Sep–Dec",img:""},
-{category:"vegetables",n:15,name:"Baby Spinach - Loose",uom:"3kg",price:24,pack:"carton · 3kg net / 3.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:""},
-{category:"vegetables",n:16,name:"Salad Mix - Loose",uom:"3kg",price:24,pack:"carton · 3kg net / 3.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
-{category:"vegetables",n:17,name:"Tripod Leafy Patch - Gourmet Mix",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/GM%20120g.png?raw=true"},
-{category:"vegetables",n:18,name:"Tripod Leafy Patch - Baby Spinach",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BS%20120g.png?raw=true"},
-{category:"vegetables",n:19,name:"Tripod Leafy Patch - Rocket Leaves",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/RL%20120g.png?raw=true"},
-{category:"vegetables",n:20,name:"Tripod Leafy Patch - Superleaf Mix",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/SLM%20120g.png?raw=true"},
-{category:"vegetables",n:21,name:"Tripod Prepacked - Gourmet Mixed",uom:"Box (100g x 16)",price:24,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/GM%20100g.png?raw=true"},
-{category:"vegetables",n:22,name:"Tripod Prepacked - Baby Kale",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BK%20100g.png?raw=true"},
-{category:"vegetables",n:23,name:"Tripod Prepacked - Rocket Leaves",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/RL%20100g.png?raw=true"},
-{category:"vegetables",n:24,name:"Tripod Prepacked - Baby Cos",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BC%20100g.png?raw=true"},
-{category:"vegetables",n:25,name:"Tripod Prepacked - Watercress",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/WC%20100g.png?raw=true"},
-{category:"vegetables",n:26,name:"Tripod Prepacked - Soft Spinach Leaves",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
-{category:"vegetables",n:27,name:"Tripod Prepacked - Spicy Rocket",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
-{category:"vegetables",n:28,name:"Tripod Prepacked - Bitter Radicchio",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
-{category:"vegetables",n:29,name:"Tripod Prepacked - Crisp Chard",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
-{category:"vegetables",n:30,name:"Asparagus",uom:"5kg",price:55,pack:"carton · 5kg net / 6kg gross · 0.02 m³ · 25×23×30cm",season:"Sep–Feb",img:"https://www.gfsstore.com/wp-content/uploads/2026/08/D120001299468-1786565774.jpg"},
-{category:"vegetables",n:31,name:"Broccoli ICED",uom:"8kg",price:20,pack:"foam carton · 8kg net / 12.5kg gross · 0.05 m³ · 58×29×30cm",season:"Jan–Dec",img:"https://fruitezy.com.au/cdn/shop/files/69BBA1DC-F245-4D15-9165-F567D51D1AA5.webp?v=1752930994"},
-{category:"vegetables",n:32,name:"BROCCOLINI",uom:"12's",price:22,pack:"foam carton · 2.5kg net / 3.5kg gross · 0.028 m³ · 39×29×16cm",season:"Jan–Dec",img:"https://d2j6dbq0eux0bg.cloudfront.net/images/76643759/products/495698387/5316320325.jpg"},
-{category:"vegetables",n:33,name:"WA Brown Onion 50-70mm",uom:"20kg",price:16,pack:"Sack · 20kg net / 21kg gross · 0.04 m³ · 56×47×17cm",season:"Jan–Dec",img:"https://summitproduce.co.nz/wp-content/uploads/2024/12/Onions-Jumbo-20kg-scaled.jpg"},
-{category:"vegetables",n:34,name:"TAS Red Onion 50-70mm",uom:"10kg",price:6,pack:"Sack · 10kg net / 10.5kg gross · 0.03 m³ · 63×38×15cm",season:"Jan–Dec",img:"https://153259612.cdn6.editmysite.com/uploads/1/5/3/2/153259612/5CRAD5JZEX4MT576ADRJNBWY.jpeg"},
-{category:"vegetables",n:46,name:"Cauliflower (QLD)",uom:"10's",price:26,pack:"carton · 9kg net / 9.5kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://fruitco.com.au/cdn/shop/files/Cauliflower_Box_10_Pieces.jpg?v=1760460048"},
-{category:"vegetables",n:47,name:"Baby cauliflower ",uom:"6's",price:50,pack:"foam carton · 2.5kg net / 3.5kg gross · 0.028 m³ · 39×29×16cm",season:"Apr–Sep",img:"https://www.thompson-morgan.com/product_images/100/CAUL_FIORETTO_S63607.jpg"},
-{category:"vegetables",n:49,name:"Jap pumpkin",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://www.australianplantsonline.com.au/media/catalog/product/5/0/500_pumpkin_jap_1_.jpg?optimize=medium&fit=bounds&height=720&width=720"},
-{category:"vegetables",n:50,name:"Butternut",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://www.theorganicgrocer.com.au/_next/image?url=https%3A%2F%2Fstatic.ooooby.org%2Fimage%2Fproduct%2Fnfs%2Fab957d9d-b4e2-4e76-b8fb-6313cbe38e55.64f4c6fe.jpg&w=3840&q=75"},
-{category:"vegetables",n:51,name:"Jarradale Pumpkin",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://i.ebayimg.com/images/g/BpkAAeSweaZpcSij/s-l1200.jpg"},
-{category:"vegetables",n:52,name:"Zucchini",uom:"10kg",price:25,pack:"carton · 10kg net / 10.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Sep–Feb",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm9jxyiNcK9l1c6tlm8bUXR-fEFRU11bT5u8QlgFZrSQ&s"},
-{category:"fruits",n:35,name:"Londsdale Strawberries (MED)",uom:"Tray (250g x 15)",price:50,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://www.perfection.com.au/hs-fs/hubfs/548ffe9e-baec-45fd-a250-c1c73a45dc8d.jpeg?width=366&height=290&name=548ffe9e-baec-45fd-a250-c1c73a45dc8d.jpeg"},
-{category:"fruits",n:36,name:"Mal's Black Label Premium Strawberries (MED)",uom:"Tray (250g x 15)",price:60,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://images.thewest.com.au/publication/B88963394Z/1537168757129_GKH1R2NFV.5-0.jpg/"},
-{category:"fruits",n:37,name:"Generic Strawberries (MED)",uom:"Tray (250g x 15)",price:40,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://shophilton.gilbertsfresh.com.au/wp-content/uploads/2022/08/Strawberry-Punnet.jpg"},
-{category:"fruits",n:38,name:"Driscoll's Blueberries (SM)",uom:"Tray (125g x 12)",price:42,pack:"tray · 1.5kg net / 2kg gross · 0.008 m³ · 39×28.5×7.5cm",season:"Sep–Feb",img:"https://cdn0.woolworths.media/content/wowproductimages/large/774651.jpg"},
-{category:"fruits",n:39,name:"Driscoll's Raspberries",uom:"Tray (125g x 12)",price:48,pack:"TRAY · 0.13kg net / 0.13kg gross · 0.01 m³ · 38.5×28.5×9cm",season:"Sep–Feb",img:"https://narraweenafruitmarket.com.au/wp-content/uploads/2024/05/Resized_20240515_124658.jpeg"},
-{category:"vegetables",n:40,name:"Prupletts Purple Carrot",uom:"Box (500g x 18)",price:35,pack:"carton · 9kg net / 9.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/purple%20carrot.png?raw=true"},
-{category:"vegetables",n:41,name:"Jack Rabbit Carrot - Loose",uom:"20kg",price:27,pack:"carton · 20kg net / 20.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDdwKhiiYZyrgoV58y8wh9wLborbe2FzlNHP2SZFwfW1uHCA92BvBUGu0&s=10"},
-{category:"fruits",n:42,name:"Zespri Gold Kiwi",uom:"6kg",price:42,pack:"carton · 6kg net / 6.5kg gross · 0.02 m³ · 40×30×13cm",season:"Mar–Aug",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSrUSeJS7LhanKfGxztt50fSgKnF0mdcE4RK2NBz5Uh9sOaj1yQCdwEUp&s=10"},
-{category:"fruits",n:43,name:"Cavendish banana (Bunch)",uom:"Carton",price:35,pack:"carton · 15kg net / 15.5kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://thepricklypineapple.com/cdn/shop/files/Screenshot2025-07-20at8.08.05am.png?v=1752970112&width=1214"},
-{category:"fruits",n:44,name:"Avocado Hass (NZ) 18's",uom:"18's",price:42,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://backyardpantry.com.au/wp-content/uploads/2022/09/20220908_101307-scaled.jpg"},
-{category:"fruits",n:45,name:"Avocado Hass (NZ) 20's",uom:"20's",price:42,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://d2j6dbq0eux0bg.cloudfront.net/images/76643759/products/495210590/5027362510.jpg"},
-{category:"fruits",n:45,name:"Avocado Hass (NZ) 23's",uom:"23's",price:35,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdTx7MtCsSWbQVKH_56IxPxlwQOKrMSLcotKUpz6oJBg_3omI8lxJqCCqz&s=10"}
+  {category:"vegetables",n:5,name:"Mushroom White Cup",uom:"4kg",price:50,pack:"carton · 4kg net / 5.18kg gross · 0.013 m³ · 38×28×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/Loose-Button-Mushrooms-970x590.jpg"},
+  {category:"vegetables",n:6,name:"White Button Mushroom",uom:"4kg",price:40,pack:"carton · 4kg net / 5kg gross · 0.014 m³ · 38×29×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/Loose-Button-Mushrooms-970x590.jpg"},
+  {category:"vegetables",n:7,name:"Flat Mushroom",uom:"4kg",price:40,pack:"carton · 4kg net / 5kg gross · 0.014 m³ · 38×29×12cm",season:"Jan–Dec",img:"https://mushboom.com.au/wp-content/uploads/2020/10/White-Flats-970x590.jpg"},
+  {category:"vegetables",n:8,name:"Salad Mix Tripod LOOSE - 10-12 Types Leaves",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
+  {category:"vegetables",n:9,name:"Salad Mix Tripod LOOSE - 3-4 Types Leaves",uom:"1.5kg",price:11,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
+  {category:"vegetables",n:10,name:"Rocket - LOOSE",uom:"1.5kg",price:18,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/rocket%201.5kg.png?raw=true"},
+  {category:"vegetables",n:11,name:"Baby Spinach - LOOSE",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/spinach%20loose.png?raw=true"},
+  {category:"vegetables",n:12,name:"Baby Cos - LOOSE",uom:"1.5kg",price:13,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:""},
+  {category:"vegetables",n:13,name:"Chard - LOOSE",uom:"1.5kg",price:15,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Apr–Sep",img:""},
+  {category:"vegetables",n:14,name:"Snow Pea Tendons - LOOSE",uom:"1.5kg",price:20,pack:"carton · 1.5kg net / 2kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Sep–Dec",img:""},
+  {category:"vegetables",n:15,name:"Baby Spinach - Loose",uom:"3kg",price:24,pack:"carton · 3kg net / 3.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:""},
+  {category:"vegetables",n:16,name:"Salad Mix - Loose",uom:"3kg",price:24,pack:"carton · 3kg net / 3.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/salad%20mix%201.5kg.png?raw=true"},
+  {category:"vegetables",n:17,name:"Tripod Leafy Patch - Gourmet Mix",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/GM%20120g.png?raw=true"},
+  {category:"vegetables",n:18,name:"Tripod Leafy Patch - Baby Spinach",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BS%20120g.png?raw=true"},
+  {category:"vegetables",n:19,name:"Tripod Leafy Patch - Rocket Leaves",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/RL%20120g.png?raw=true"},
+  {category:"vegetables",n:20,name:"Tripod Leafy Patch - Superleaf Mix",uom:"Box (120g x 14)",price:22.40,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/SLM%20120g.png?raw=true"},
+  {category:"vegetables",n:21,name:"Tripod Prepacked - Gourmet Mixed",uom:"Box (100g x 16)",price:24,pack:"carton · 1.44kg net / 2.4kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/GM%20100g.png?raw=true"},
+  {category:"vegetables",n:22,name:"Tripod Prepacked - Baby Kale",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BK%20100g.png?raw=true"},
+  {category:"vegetables",n:23,name:"Tripod Prepacked - Rocket Leaves",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/RL%20100g.png?raw=true"},
+  {category:"vegetables",n:24,name:"Tripod Prepacked - Baby Cos",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/BC%20100g.png?raw=true"},
+  {category:"vegetables",n:25,name:"Tripod Prepacked - Watercress",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/WC%20100g.png?raw=true"},
+  {category:"vegetables",n:26,name:"Tripod Prepacked - Soft Spinach Leaves",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+  {category:"vegetables",n:27,name:"Tripod Prepacked - Spicy Rocket",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+  {category:"vegetables",n:28,name:"Tripod Prepacked - Bitter Radicchio",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+  {category:"vegetables",n:29,name:"Tripod Prepacked - Crisp Chard",uom:"Box (100g x 16)",price:24,pack:"carton · 1.6kg net / 1.65kg gross · 0.021 m³ · 38×29×19cm",season:"Apr–Sep",img:""},
+  {category:"vegetables",n:30,name:"Asparagus",uom:"5kg",price:55,pack:"carton · 5kg net / 6kg gross · 0.02 m³ · 25×23×30cm",season:"Sep–Feb",img:"https://www.gfsstore.com/wp-content/uploads/2026/08/D120001299468-1786565774.jpg"},
+  {category:"vegetables",n:31,name:"Broccoli ICED",uom:"8kg",price:20,pack:"foam carton · 8kg net / 12.5kg gross · 0.05 m³ · 58×29×30cm",season:"Jan–Dec",img:"https://fruitezy.com.au/cdn/shop/files/69BBA1DC-F245-4D15-9165-F567D51D1AA5.webp?v=1752930994"},
+  {category:"vegetables",n:32,name:"BROCCOLINI",uom:"12's",price:22,pack:"foam carton · 2.5kg net / 3.5kg gross · 0.028 m³ · 39×29×16cm",season:"Jan–Dec",img:"https://d2j6dbq0eux0bg.cloudfront.net/images/76643759/products/495698387/5316320325.jpg"},
+  {category:"vegetables",n:33,name:"WA Brown Onion 50-70mm",uom:"20kg",price:16,pack:"Sack · 20kg net / 21kg gross · 0.04 m³ · 56×47×17cm",season:"Jan–Dec",img:"https://summitproduce.co.nz/wp-content/uploads/2024/12/Onions-Jumbo-20kg-scaled.jpg"},
+  {category:"vegetables",n:34,name:"TAS Red Onion 50-70mm",uom:"10kg",price:6,pack:"Sack · 10kg net / 10.5kg gross · 0.03 m³ · 63×38×15cm",season:"Jan–Dec",img:"https://153259612.cdn6.editmysite.com/uploads/1/5/3/2/153259612/5CRAD5JZEX4MT576ADRJNBWY.jpeg"},
+  {category:"vegetables",n:46,name:"Cauliflower (QLD)",uom:"10's",price:26,pack:"carton · 9kg net / 9.5kg gross · 0.04 m³ · 57×38.5×18cm",season:"Apr–Sep",img:"https://fruitco.com.au/cdn/shop/files/Cauliflower_Box_10_Pieces.jpg?v=1760460048"},
+  {category:"vegetables",n:47,name:"Baby cauliflower ",uom:"6's",price:50,pack:"foam carton · 2.5kg net / 3.5kg gross · 0.028 m³ · 39×29×16cm",season:"Apr–Sep",img:"https://www.thompson-morgan.com/product_images/100/CAUL_FIORETTO_S63607.jpg"},
+  {category:"vegetables",n:49,name:"Jap pumpkin",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://www.australianplantsonline.com.au/media/catalog/product/5/0/500_pumpkin_jap_1_.jpg?optimize=medium&fit=bounds&height=720&width=720"},
+  {category:"vegetables",n:50,name:"Butternut",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://www.theorganicgrocer.com.au/_next/image?url=https%3A%2F%2Fstatic.ooooby.org%2Fimage%2Fproduct%2Fnfs%2Fab957d9d-b4e2-4e76-b8fb-6313cbe38e55.64f4c6fe.jpg&w=3840&q=75"},
+  {category:"vegetables",n:51,name:"Jarradale Pumpkin",uom:"480kg",price:480,pack:"carton · 480kg net / 485kg gross · 1.13 m³ · 122×102×91cm",season:"Mar–Aug",img:"https://i.ebayimg.com/images/g/BpkAAeSweaZpcSij/s-l1200.jpg"},
+  {category:"vegetables",n:52,name:"Zucchini",uom:"10kg",price:25,pack:"carton · 10kg net / 10.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Sep–Feb",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm9jxyiNcK9l1c6tlm8bUXR-fEFRU11bT5u8QlgFZrSQ&s"},
+  {category:"fruits",n:35,name:"Londsdale Strawberries (MED)",uom:"Tray (250g x 15)",price:50,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://www.perfection.com.au/hs-fs/hubfs/548ffe9e-baec-45fd-a250-c1c73a45dc8d.jpeg?width=366&height=290&name=548ffe9e-baec-45fd-a250-c1c73a45dc8d.jpeg"},
+  {category:"fruits",n:36,name:"Mal's Black Label Premium Strawberries (MED)",uom:"Tray (250g x 15)",price:60,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://images.thewest.com.au/publication/B88963394Z/1537168757129_GKH1R2NFV.5-0.jpg/"},
+  {category:"fruits",n:37,name:"Generic Strawberries (MED)",uom:"Tray (250g x 15)",price:40,pack:"tray · 3.75kg net / 4.2kg gross · 0.02 m³ · 58×39×9.5cm",season:"Sep–Feb",img:"https://shophilton.gilbertsfresh.com.au/wp-content/uploads/2022/08/Strawberry-Punnet.jpg"},
+  {category:"fruits",n:38,name:"Driscoll's Blueberries (SM)",uom:"Tray (125g x 12)",price:42,pack:"tray · 1.5kg net / 2kg gross · 0.008 m³ · 39×28.5×7.5cm",season:"Sep–Feb",img:"https://cdn0.woolworths.media/content/wowproductimages/large/774651.jpg"},
+  {category:"fruits",n:39,name:"Driscoll's Raspberries",uom:"Tray (125g x 12)",price:48,pack:"TRAY · 0.13kg net / 0.13kg gross · 0.01 m³ · 38.5×28.5×9cm",season:"Sep–Feb",img:"https://narraweenafruitmarket.com.au/wp-content/uploads/2024/05/Resized_20240515_124658.jpeg"},
+  {category:"vegetables",n:40,name:"Prupletts Purple Carrot",uom:"Box (500g x 18)",price:35,pack:"carton · 9kg net / 9.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://github.com/jackyser521-art/Pogenerated/blob/main/images/purple%20carrot.png?raw=true"},
+  {category:"vegetables",n:41,name:"Jack Rabbit Carrot - Loose",uom:"20kg",price:27,pack:"carton · 20kg net / 20.5kg gross · 0.009 m³ · 38.5×8×28.5cm",season:"Jan–Dec",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDdwKhiiYZyrgoV58y8wh9wLborbe2FzlNHP2SZFwfW1uHCA92BvBUGu0&s=10"},
+  {category:"fruits",n:42,name:"Zespri Gold Kiwi",uom:"6kg",price:42,pack:"carton · 6kg net / 6.5kg gross · 0.02 m³ · 40×30×13cm",season:"Mar–Aug",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcSrUSeJS7LhanKfGxztt50fSgKnF0mdcE4RK2NBz5Uh9sOaj1yQCdwEUp&s=10"},
+  {category:"fruits",n:43,name:"Cavendish banana (Bunch)",uom:"Carton",price:35,pack:"carton · 15kg net / 15.5kg gross · 0.04 m³ · 57×38.5×18cm",season:"Jan–Dec",img:"https://thepricklypineapple.com/cdn/shop/files/Screenshot2025-07-20at8.08.05am.png?v=1752970112&width=1214"},
+  {category:"fruits",n:44,name:"Avocado Hass (NZ) 18's",uom:"18's",price:42,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://backyardpantry.com.au/wp-content/uploads/2022/09/20220908_101307-scaled.jpg"},
+  {category:"fruits",n:45,name:"Avocado Hass (NZ) 20's",uom:"20's",price:42,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://d2j6dbq0eux0bg.cloudfront.net/images/76643759/products/495210590/5027362510.jpg"},
+  {category:"fruits",n:45,name:"Avocado Hass (NZ) 23's",uom:"23's",price:35,pack:"tray · 5kg net / 6kg gross · 0.011 m³ · 37×28×11cm",season:"Jan–Dec",img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdTx7MtCsSWbQVKH_56IxPxlwQOKrMSLcotKUpz6oJBg_3omI8lxJqCCqz&s=10"}
 ];
 
-function imgTag(p){return p.img ? `<img src="${p.img}" alt="${p.name}">` : `<div style="width:60px;height:50px;background:#eee;border-radius:5px"></div>`}
+
+/* =========================
+   ORDER QUANTITIES
+   ========================= */
+
+/*
+   IMPORTANT:
+   Quantities are stored here instead of only inside
+   the currently visible HTML inputs.
+
+   This means searching products will NOT erase quantities.
+*/
+const orderQty = {};
+
+
+/* =========================
+   IMAGE
+   ========================= */
+
+function imgTag(p){
+  return p.img
+    ? `<img src="${p.img}" alt="${p.name}">`
+    : `<div style="width:60px;height:50px;background:#eee;border-radius:5px"></div>`;
+}
+
+
+/* =========================
+   ORDER PAGE
+   ========================= */
+
 function renderOrder(){
- const el=document.getElementById('orderList');
- const term=(document.getElementById('orderSearch')?.value||'').toLowerCase();
- el.innerHTML=products.map((p,i)=>({p,i})).filter(x=>x.p.name.toLowerCase().includes(term)).map(({p,i})=>`<div class="order-row">
- ${imgTag(p)}<div><b>${p.name}</b><br><span class="muted">${p.uom} · $${p.price.toFixed(2)}</span></div>
- <input class="qty" type="number" min="0" step="1" value="0" data-i="${i}" oninput="calc()">
- <div>$<span id="line${i}">0.00</span></div><div class="note">${p.season}</div></div>`).join('');
+
+  const el = document.getElementById('orderList');
+
+  const term =
+    (document.getElementById('orderSearch')?.value || '')
+    .toLowerCase()
+    .trim();
+
+  const filtered = products
+    .map((p,i)=>({p,i}))
+    .filter(x =>
+      x.p.name.toLowerCase().includes(term)
+    );
+
+  el.innerHTML = filtered.map(({p,i}) => `
+
+    <div class="order-row">
+
+      ${imgTag(p)}
+
+      <div>
+        <b>${p.name}</b><br>
+        <span class="muted">
+          ${p.uom} · $${p.price.toFixed(2)}
+        </span>
+      </div>
+
+      <input
+        class="qty"
+        type="number"
+        min="0"
+        step="1"
+        value="${orderQty[i] || 0}"
+        data-i="${i}"
+        oninput="setQty(this)"
+      >
+
+      <div>
+        $<span id="line${i}">
+          ${((orderQty[i] || 0) * p.price).toFixed(2)}
+        </span>
+      </div>
+
+      <div class="note">
+        ${p.season}
+      </div>
+
+    </div>
+
+  `).join('');
+
+  calc();
 }
+
+
+/* Save quantity whenever user changes it */
+function setQty(input){
+
+  const i = Number(input.dataset.i);
+
+  const value =
+    Math.max(0, parseInt(input.value,10) || 0);
+
+  orderQty[i] = value;
+
+  calc();
+}
+
+
+/* Calculate total from ALL products */
 function calc(){
- let total=0;
- document.querySelectorAll('.qty').forEach(q=>{let i=+q.dataset.i;let v=Math.max(0,+q.value||0);let line=v*products[i].price;document.getElementById('line'+i).textContent=line.toFixed(2);total+=line});
- document.getElementById('grandTotal').textContent=total.toFixed(2);
+
+  let total = 0;
+
+  products.forEach((p,i)=>{
+
+    const qty = orderQty[i] || 0;
+
+    const line = qty * p.price;
+
+    total += line;
+
+    const lineElement =
+      document.getElementById('line' + i);
+
+    if(lineElement){
+      lineElement.textContent =
+        line.toFixed(2);
+    }
+
+  });
+
+  document.getElementById('grandTotal').textContent =
+    total.toFixed(2);
 }
+
+
+/* =========================
+   CATALOGUE
+   ========================= */
+
 let selectedCategory = 'all';
 
 function setCategory(category, button){
- selectedCategory = category;
- document.querySelectorAll('.category-tab').forEach(b=>b.classList.remove('active'));
- if(button) button.classList.add('active');
- renderCatalogue();
+
+  selectedCategory = category;
+
+  document
+    .querySelectorAll('.category-tab')
+    .forEach(b => b.classList.remove('active'));
+
+  if(button){
+    button.classList.add('active');
+  }
+
+  renderCatalogue();
 }
 
+
 function renderCatalogue(){
- let term=(document.getElementById('search')?.value||'').toLowerCase();
- let filtered=products.filter(p=>{
-   let categoryMatch=selectedCategory==='all' || p.category===selectedCategory;
-   let searchMatch=p.name.toLowerCase().includes(term);
-   return categoryMatch && searchMatch;
- });
- document.getElementById('catalogue').innerHTML=filtered.map(p=>`<tr>
-  <td>${p.n}</td><td>${imgTag(p)}</td><td><b>${p.name}</b></td><td>${p.uom}</td><td>$${p.price.toFixed(2)}</td><td>${p.pack}</td><td class="season">${p.season}</td></tr>`).join('');
+
+  const term =
+    (document.getElementById('search')?.value || '')
+    .toLowerCase()
+    .trim();
+
+  const filtered = products.filter(p => {
+
+    const categoryMatch =
+      selectedCategory === 'all' ||
+      p.category === selectedCategory;
+
+    const searchMatch =
+      p.name.toLowerCase().includes(term);
+
+    return categoryMatch && searchMatch;
+  });
+
+  document.getElementById('catalogue').innerHTML =
+    filtered.map(p => `
+
+      <tr>
+
+        <td>${p.n}</td>
+
+        <td>${imgTag(p)}</td>
+
+        <td>
+          <b>${p.name}</b>
+        </td>
+
+        <td>${p.uom}</td>
+
+        <td>$${p.price.toFixed(2)}</td>
+
+        <td>${p.pack}</td>
+
+        <td class="season">
+          ${p.season}
+        </td>
+
+      </tr>
+
+    `).join('');
 }
+
+
+/* =========================
+   PAGE NAVIGATION
+   ========================= */
+
 function showPage(n){
- document.querySelectorAll('.page').forEach(x=>x.classList.remove('active','printable'));
- document.getElementById('page'+n).classList.add('active');
- document.querySelectorAll('nav button').forEach((b)=>b.classList.remove('active')); if(n===1)document.querySelectorAll('nav button')[0].classList.add('active'); if(n===3)document.querySelectorAll('nav button')[1].classList.add('active');
- if(n===2)renderCatalogue(); if(n===3){buildPreview();document.getElementById('page3').classList.add('printable')}
- window.scrollTo(0,0);
+
+  document
+    .querySelectorAll('.page')
+    .forEach(x =>
+      x.classList.remove('active','printable')
+    );
+
+  document
+    .getElementById('page' + n)
+    .classList.add('active');
+
+  document
+    .querySelectorAll('nav button')
+    .forEach(b =>
+      b.classList.remove('active')
+    );
+
+  if(n === 1){
+    document
+      .querySelectorAll('nav button')[0]
+      .classList.add('active');
+  }
+
+  if(n === 3){
+    document
+      .querySelectorAll('nav button')[1]
+      .classList.add('active');
+  }
+
+  if(n === 2){
+    renderCatalogue();
+  }
+
+  if(n === 3){
+
+    buildPreview();
+
+    document
+      .getElementById('page3')
+      .classList.add('printable');
+  }
+
+  window.scrollTo(0,0);
 }
+
+
+/* =========================
+   PURCHASE ORDER PREVIEW
+   ========================= */
+
 function buildPreview(){
- let rows=[],total=0;
- document.querySelectorAll('.qty').forEach(q=>{let i=+q.dataset.i,v=Math.max(0,+q.value||0);if(v){let p=products[i],line=v*p.price;total+=line;rows.push(`<tr><td>${p.name}</td><td>${p.uom}</td><td>${v}</td><td>$${p.price.toFixed(2)}</td><td>$${line.toFixed(2)}</td></tr>`)}})
- let c=document.getElementById('customer').value||document.getElementById('customer4').value||'Customer';
- document.getElementById('preview').innerHTML=`<h1>PRIME HARVEST OZ</h1><p>34 Bruny Dr, Tarneit VIC 3029 · ABN 42 834 791 70</p>
- <hr><h2>PURCHASE ORDER</h2><p><b>Customer:</b> ${esc(c)}<br><b>Order date:</b> ${document.getElementById('orderDate').value||new Date().toLocaleDateString('en-AU')}</p>
- <table><thead><tr><th>Product</th><th>Pack / UOM</th><th>Qty</th><th>Unit Price</th><th>Line Total</th></tr></thead><tbody>${rows.length?rows.join(''):'<tr><td colspan="5">No products selected.</td></tr>'}</tbody></table>
- <h2 class="right">TOTAL: $${total.toFixed(2)}</h2>
- <hr><p><b>Contact:</b> ${esc(document.getElementById('contact').value)} &nbsp; <b>Phone:</b> ${esc(document.getElementById('phone').value)} &nbsp; <b>Email:</b> ${esc(document.getElementById('email').value)}</p>
- <p><b>Delivery address:</b><br>${esc(document.getElementById('address').value).replace(/\\n/g,'<br>')}</p>
- <p><b>Notes:</b><br>${esc(document.getElementById('notes').value).replace(/\\n/g,'<br>')}</p>
- <p class="note">Customer: please print/save this PO as PDF and manually email it to Prime Harvest OZ.</p>`;
+
+  let rows = [];
+  let total = 0;
+
+
+  /*
+     IMPORTANT:
+     Read quantities from orderQty.
+     Do NOT read .qty inputs because search
+     can hide some products.
+  */
+
+  products.forEach((p,i)=>{
+
+    const qty = orderQty[i] || 0;
+
+    if(qty > 0){
+
+      const line = qty * p.price;
+
+      total += line;
+
+      rows.push(`
+
+        <tr>
+
+          <td>${esc(p.name)}</td>
+
+          <td>${esc(p.uom)}</td>
+
+          <td>${qty}</td>
+
+          <td>$${p.price.toFixed(2)}</td>
+
+          <td>$${line.toFixed(2)}</td>
+
+        </tr>
+
+      `);
+    }
+
+  });
+
+
+  /*
+     ONLY use fields that actually exist
+     on Page 1.
+  */
+
+  const customer =
+    document.getElementById('customer')?.value ||
+    'Customer';
+
+  const orderDate =
+    document.getElementById('orderDate')?.value ||
+    new Date().toLocaleDateString('en-AU');
+
+
+  document.getElementById('preview').innerHTML = `
+
+    <h1>PRIME HARVEST OZ</h1>
+
+    <p>
+      34 Bruny Dr, Tarneit VIC 3029
+      · ABN 42 834 791 70
+    </p>
+
+    <hr>
+
+    <h2>PURCHASE ORDER</h2>
+
+    <p>
+      <b>Customer:</b>
+      ${esc(customer)}
+      <br>
+
+      <b>Order date:</b>
+      ${esc(orderDate)}
+    </p>
+
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Product</th>
+          <th>Pack / UOM</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Line Total</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        ${
+          rows.length
+          ? rows.join('')
+          : `
+            <tr>
+              <td colspan="5">
+                No products selected.
+              </td>
+            </tr>
+          `
+        }
+
+      </tbody>
+
+    </table>
+
+
+    <h2 class="right">
+      TOTAL: $${total.toFixed(2)}
+    </h2>
+
+
+    <hr>
+
+
+    <p class="note">
+      Customer: please print/save this PO as PDF
+      and manually email it to Prime Harvest OZ.
+    </p>
+
+  `;
 }
-function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function clearOrder(){document.querySelectorAll('.qty').forEach(q=>q.value=0);calc()}
-function sync(id,v){document.getElementById(id).value=v}
-document.getElementById('orderDate').value=new Date().toISOString().slice(0,10);
-renderOrder();calc();renderCatalogue();
+
+
+/* =========================
+   ESCAPE HTML
+   ========================= */
+
+function esc(s){
+
+  return String(s || '').replace(
+    /[&<>"']/g,
+
+    m => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#039;'
+    }[m])
+  );
+
+}
+
+
+/* =========================
+   CLEAR ORDER
+   ========================= */
+
+function clearOrder(){
+
+  Object.keys(orderQty).forEach(
+    key => delete orderQty[key]
+  );
+
+  renderOrder();
+
+  calc();
+}
+
+
+/* =========================
+   INITIALISE
+   ========================= */
+
+document.getElementById('orderDate').value =
+  new Date().toISOString().slice(0,10);
+
+renderOrder();
+calc();
+renderCatalogue();
+
 </script>
 </body>
 </html>
